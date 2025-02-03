@@ -1,7 +1,7 @@
 // ~/stores/session.ts
-import { defineStore } from "pinia";
-import { ref } from "vue";
-import { createClient } from "postchain-client";
+import { defineStore } from "pinia" 
+import { ref } from "vue" 
+import { createClient } from "postchain-client" 
 import {
   type Session,
   createKeyStoreInteractor,
@@ -11,33 +11,33 @@ import {
   registerAccount,
   registrationStrategy,
   ttlLoginRule,
-} from "@chromia/ft4";
+} from "@chromia/ft4" 
 
 declare global {
   interface Window {
-    ethereum?: any;
+    ethereum?: any 
   }
 }
 
 export const useSessionStore = defineStore("session", () => {
-  const session = ref<Session | null>(null);
+  const session = ref<Session | null>(null) 
 
   const initSession = async () => {
-    console.log("Connecting wallet and initializing session...");
+    console.log("Connecting wallet and initializing session...") 
 
     const client = await createClient({
       nodeUrlPool: "http://localhost:7740",
       blockchainIid: 0,
-    });
+    }) 
 
     if (!window.ethereum) {
-      console.error("MetaMask is not installed");
-      return;
+      console.error("MetaMask is not installed") 
+      return 
     }
 
-    const evmKeyStore = await createWeb3ProviderEvmKeyStore(window.ethereum);
-    const evmKeyStoreInteractor = createKeyStoreInteractor(client, evmKeyStore);
-    const accounts = await evmKeyStoreInteractor.getAccounts();
+    const evmKeyStore = await createWeb3ProviderEvmKeyStore(window.ethereum) 
+    const evmKeyStoreInteractor = createKeyStoreInteractor(client, evmKeyStore) 
+    const accounts = await evmKeyStoreInteractor.getAccounts() 
 
     if (accounts.length > 0) {
       const { session: newSession } = await evmKeyStoreInteractor.login({
@@ -46,10 +46,10 @@ export const useSessionStore = defineStore("session", () => {
           rules: ttlLoginRule(hours(2)),
           flags: ["MySession"],
         },
-      });
-      session.value = newSession;
+      }) 
+      session.value = newSession 
     } else {
-      const authDescriptor = createSingleSigAuthDescriptorRegistration(["A", "T"], evmKeyStore.id);
+      const authDescriptor = createSingleSigAuthDescriptorRegistration(["A", "T"], evmKeyStore.id) 
       const { session: newSession } = await registerAccount(
         client,
         evmKeyStore,
@@ -63,12 +63,12 @@ export const useSessionStore = defineStore("session", () => {
           name: "create_user",
           args: ["RandomUser_" + Math.floor(Math.random() * 1000)],
         }
-      );
-      session.value = newSession;
+      ) 
+      session.value = newSession 
     }
 
-    console.log("Session initialized:", session.value);
-  };
+    console.log("Session initialized:", session.value) 
+  } 
 
-  return { session, initSession };
-});
+  return { session, initSession } 
+}) 

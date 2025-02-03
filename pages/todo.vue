@@ -1,89 +1,80 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { useDebounceFn } from "@vueuse/core";
-import { useToast } from '~/components/ui/toast';
-import { useSession } from "@/composables/useSession";
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import AddTaskModal from '../components/addTask.vue';
-import UserModal from '~/components/userModal.vue';
-import type {TaskAdded} from '~/types/addTask';
-import type { fetchedTask } from '~/types/fetchedTask';
+import { ref, computed, watch, onMounted } from 'vue' 
+import { useRouter } from 'vue-router' 
+import { useDebounceFn } from "@vueuse/core" 
+import { useToast } from '~/components/ui/toast' 
+import { useSession } from "@/composables/useSession" 
+import { Button } from '@/components/ui/button' 
+import {DropdownMenu,  DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu' 
+import AddTaskModal from '../components/addTask.vue' 
+import UserModal from '~/components/userModal.vue' 
+import type {TaskAdded} from '~/types/addTask' 
+import type { fetchedTask } from '~/types/fetchedTask' 
 
 // Reusable composables and utilities
-const { session} = useSession();
-const { toast } = useToast();
+const { session} = useSession() 
+const { toast } = useToast() 
 
 // State management
-const sort = ref('none'); // Sorting option: 'none', 'sooner', 'later'
-const filter = ref('all'); // Filter option: 'all', 'completed', 'past-due'
-const searchQuery = ref(''); // Search query for tasks
-const offset = ref(0); // Pagination offset
-const totalTask = ref(0); // Total number of tasks
-const isLoading = ref(false); // Loading state
-const tasksResult = ref<fetchedTask[]>([]); // List of tasks fetched from the backend
-const userName = ref(''); // Current user's name
-const taskStats = ref({ total: 0, completed: 0 }); // Task statistics
-const isAddTaskModalOpen = ref(false); // Add/edit task modal state
-const isUserOpen = ref(false); // User modal state
-const editTaskId = ref(null); // ID of the task being edited
+const sort = ref('none')  
+const filter = ref('all')  
+const searchQuery = ref('')  // Search query for tasks
+const offset = ref(0)  // Pagination offset
+const totalTask = ref(0)  // Total number of tasks
+const isLoading = ref(false)  // Loading state
+const tasksResult = ref<fetchedTask[]>([])  // List of tasks fetched from the backend
+const userName = ref('')  // Current user's name
+const taskStats = ref({ total: 0, completed: 0 })  // Task statistics
+const isAddTaskModalOpen = ref(false)  // Add/edit task modal state
+const isUserOpen = ref(false)  // User modal state
+const editTaskId = ref(null)  // ID of the task being edited
 
 // Debounced search function
 const debouncedFn = useDebounceFn((val: string) => {
-  searchQuery.value = val;
-}, 1000, { maxWait: 5000 });
+  searchQuery.value = val 
+}, 1000, { maxWait: 5000 }) 
 
 // Computed properties
 const sortedTaskResult = computed(() => {
-  if (!tasksResult.value) return [];
+  if (!tasksResult.value) return [] 
 
   // Filter tasks based on the selected filter
   const filteredTasks = tasksResult.value.filter(task => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const taskDate = new Date(task.dueDate);
-    taskDate.setHours(0, 0, 0, 0);
-
+    const today = new Date() 
+    today.setHours(0, 0, 0, 0) 
+    const taskDate = new Date(task.dueDate) 
+    taskDate.setHours(0, 0, 0, 0) 
     switch (filter.value) {
       case 'completed':
-        return task.iscomplete === 1;
+        return task.iscomplete === 1 
       case 'past-due':
-        return !task.iscomplete && taskDate < today;
+        return !task.iscomplete && taskDate < today 
       case 'all':
       default:
-        return true;
+        return true 
     }
-  });
+  }) 
 
   // Sort tasks based on the selected sort option
   return filteredTasks.sort((a, b) => {
-    if (sort.value === 'none') return 0;
+    if (sort.value === 'none') return 0 
 
-    const dateA = new Date(a.duedate).getTime();
-    const dateB = new Date(b.duedate).getTime();
+    const dateA = new Date(a.duedate).getTime() 
+    const dateB = new Date(b.duedate).getTime() 
 
-    return sort.value === 'sooner' ? dateA - dateB : dateB - dateA;
-  });
-});
+    return sort.value === 'sooner' ? dateA - dateB : dateB - dateA 
+  }) 
+}) 
 
 const passTaskInfo = computed(() => {
-  const task = tasksResult.value.find(task => task.id === editTaskId.value);
+  const task = tasksResult.value.find(task => task.id === editTaskId.value) 
   return task ? {
     id: task.id,
     title: task.title,
     description: task.description,
     dueDate: task.duedate,
-  } : null;
-});
+  } : null 
+}) 
 
 // Watchers
 
@@ -93,11 +84,11 @@ const passTaskInfo = computed(() => {
 // Functions for fetching data
 const fetchTasks = async (newOffset?: number) => {
   if (!session.value) {
-    console.error("No active session.");
-    return;
+    console.error("No active session.") 
+    return 
   }
 
-  isLoading.value = true;
+  isLoading.value = true 
 
   try {
     const result = await session.value.query({
@@ -108,31 +99,31 @@ const fetchTasks = async (newOffset?: number) => {
         max: 5,
         id: session.value.account.id,
       },
-    });
+    }) 
 console.log(result)
     if (!result || !Array.isArray(result.tasks )) {
-      console.warn("No tasks returned or invalid format.");
-      return;
+      console.warn("No tasks returned or invalid format.") 
+      return 
     }
 
     if (newOffset !== undefined) {
-      tasksResult.value = result.tasks;
+      tasksResult.value = result.tasks 
     } else {
-      const existingTaskIds = new Set(tasksResult.value.map(task => Array.from(task.id).join(",")));
-      const newTasks = result.tasks.filter(task => !existingTaskIds.has(Array.from(task.id).join(",")));
-      tasksResult.value = [...tasksResult.value, ...newTasks];
+      const existingTaskIds = new Set(tasksResult.value.map(task => Array.from(task.id).join(","))) 
+      const newTasks = result.tasks.filter(task => !existingTaskIds.has(Array.from(task.id).join(","))) 
+      tasksResult.value = [...tasksResult.value, ...newTasks] 
     }
   } catch (error) {
-    console.error("Failed to fetch tasks", error);
+    console.error("Failed to fetch tasks", error) 
   } finally {
-    isLoading.value = false;
+    isLoading.value = false 
   }
-};
+} 
 
 const fetchTotalTasksWithQuery = async () => {
   if (!session.value) {
-    console.error("No active session.");
-    return;
+    console.error("No active session.") 
+    return 
   }
 
   try {
@@ -142,17 +133,17 @@ const fetchTotalTasksWithQuery = async () => {
         id: session.value.account.id,
         title: searchQuery.value,
       },
-    });
-    totalTask.value = result;
+    }) 
+    totalTask.value = result 
   } catch (error) {
-    console.error("Failed to fetch tasks", error);
+    console.error("Failed to fetch tasks", error) 
   }
-};
+} 
 
 const fetchTaskStat = async () => {
   if (!session.value) {
-    console.error("No active session.");
-    return;
+    console.error("No active session.") 
+    return 
   }
 
   try {
@@ -161,38 +152,38 @@ const fetchTaskStat = async () => {
       args: {
         id: session.value.account.id,
       },
-    });
-    taskStats.value = result;
+    }) 
+    taskStats.value = result 
   } catch (error) {
-    console.error("Failed to fetch task stats", error);
+    console.error("Failed to fetch task stats", error) 
   }
-};
+} 
 
-const populateValues = async () => {
+const getUser = async () => {
   if (!session.value) {
     toast({
       title: 'Error',
       description: 'No active session',
       variant: 'destructive',
-    });
-    return;
+    }) 
+    return 
   }
 
   try {
     const result = await session.value.query({
       name: 'get_user',
       args: { id: session.value.account.id },
-    });
-    userName.value = result;
+    }) 
+    userName.value = result 
   } catch (error) {
-    console.error(error);
+    console.error(error) 
     toast({
       title: 'Error',
       description: 'Failed to fetch user details',
       variant: 'destructive',
-    });
+    }) 
   }
-};
+} 
 
 // Task-related functions
 const addTask = async (task: TaskAdded) => {
@@ -201,28 +192,28 @@ const addTask = async (task: TaskAdded) => {
       title: 'Error',
       description: 'No active session',
       variant: 'destructive',
-    });
-    return;
+    }) 
+    return 
   }
 
   try {
     await session.value.call({
       name: 'create_task',
       args: [task.title, task.description, task.dueDate],
-    });
-    await fetchTasks();
+    }) 
+    await fetchTasks() 
     toast({
       title: 'Success',
       description: 'Task created successfully',
-    });
+    }) 
   } catch (error) {
     toast({
       title: 'Error',
       description: 'Failed to create task',
       variant: 'destructive',
-    });
+    }) 
   }
-};
+} 
 
 const updateTask = async (taskId: Uint8Array, updatedTask) => {
   if (!session.value) {
@@ -230,35 +221,35 @@ const updateTask = async (taskId: Uint8Array, updatedTask) => {
       title: 'Error',
       description: 'No active session',
       variant: 'destructive',
-    });
-    return;
+    }) 
+    return 
   }
 
   try {
     await session.value.call({
       name: 'edit_task',
       args: [taskId, updatedTask.title, updatedTask.description, updatedTask.dueDate],
-    });
+    }) 
 
-    const task = tasksResult.value.find(task => task.id === taskId);
+    const task = tasksResult.value.find(task => task.id === taskId) 
     if (task) {
-      task.title = updatedTask.title;
-      task.description = updatedTask.description;
-      task.duedate = updatedTask.dueDate;
+      task.title = updatedTask.title 
+      task.description = updatedTask.description 
+      task.duedate = updatedTask.dueDate 
     }
 
     toast({
       title: 'Success',
       description: 'Task updated successfully',
-    });
+    }) 
   } catch (error) {
     toast({
       title: 'Error',
       description: 'Failed to update task',
       variant: 'destructive',
-    });
+    }) 
   }
-};
+} 
 
 const deleteTask = async (taskId: Uint8Array) => {
   if (!session.value) {
@@ -266,29 +257,32 @@ const deleteTask = async (taskId: Uint8Array) => {
       title: 'Error',
       description: 'No active session',
       variant: 'destructive',
-    });
-    return;
+    }) 
+    return 
   }
 
   try {
     await session.value.call({
       name: 'delete_task',
       args: [taskId],
-    });
+    }) 
 
-    tasksResult.value = tasksResult.value.filter(task => task.id !== taskId);
+    tasksResult.value = tasksResult.value.filter(task => task.id !== taskId) 
+    fetchTasks() 
+    fetchTotalTasksWithQuery() 
+    fetchTaskStat()
     toast({
       title: 'Success',
       description: 'Task deleted successfully',
-    });
+    }) 
   } catch (error) {
     toast({
       title: 'Error',
       description: 'Failed to delete task',
       variant: 'destructive',
-    });
+    }) 
   }
-};
+} 
 
 const completeTask = async (taskId: Uint8Array) => {
   if (!session.value) {
@@ -296,33 +290,33 @@ const completeTask = async (taskId: Uint8Array) => {
       title: 'Error',
       description: 'No active session',
       variant: 'destructive',
-    });
-    return;
+    }) 
+    return 
   }
 
   try {
-    const task = tasksResult.value.find(task => task.id === taskId);
+    const task = tasksResult.value.find(task => task.id === taskId) 
     if (task) {
-      task.iscomplete = task.iscomplete === 1 ? 0 : 1;
+      task.iscomplete = task.iscomplete === 1 ? 0 : 1 
     }
 
     await session.value.call({
       name: 'toggle_task',
       args: [taskId],
-    });
+    }) 
 
     toast({
       title: 'Success',
       description: 'Task status updated successfully',
-    });
+    }) 
   } catch (error) {
     toast({
       title: 'Error',
       description: 'Failed to update task status',
       variant: 'destructive',
-    });
+    }) 
   }
-};
+} 
 
 // User-related functions
 const editUser = async (name: string) => {
@@ -331,31 +325,31 @@ const editUser = async (name: string) => {
       title: 'Error',
       description: 'No active session',
       variant: 'destructive',
-    });
-    return;
+    }) 
+    return 
   }
 
   try {
     await session.value.call({
       name: 'update_profile',
       args: [name],
-    });
+    }) 
 
-    userName.value = name;
+    userName.value = name 
     toast({
       title: 'Success',
       description: 'Profile updated successfully',
-    });
+    }) 
   } catch (error) {
     toast({
       title: 'Error',
       description: 'Failed to update profile',
       variant: 'destructive',
-    });
+    }) 
   } finally {
-    isUserOpen.value = false;
+    isUserOpen.value = false 
   }
-};
+} 
 
 // Modal-related functions
 const editTask = (taskId: Uint8Array) => {
@@ -363,57 +357,57 @@ const editTask = (taskId: Uint8Array) => {
   openAddTaskModal()
 }
 const openAddTaskModal = () => {
-  isAddTaskModalOpen.value = true;
-};
+  isAddTaskModalOpen.value = true 
+} 
 
 const closeAddTaskModal = () => {
-  isAddTaskModalOpen.value = false;
-  editTaskId.value = null;
-};
+  isAddTaskModalOpen.value = false 
+  editTaskId.value = null 
+} 
 
 const openUserModal = () => {
-  isUserOpen.value = true;
-};
+  isUserOpen.value = true 
+} 
 
 const closeUserModal = () => {
-  isUserOpen.value = false;
-};
+  isUserOpen.value = false 
+} 
 
 // Load more functionality
 const loadMore = async () => {
-  offset.value += 5;
-  await fetchTasks();
-};
+  offset.value += 5 
+  await fetchTasks() 
+} 
 
 onMounted(() => {
   if (session.value) {
-    fetchTasks();
-    fetchTotalTasksWithQuery();
-    fetchTaskStat();
-    populateValues();
+    fetchTasks() 
+    fetchTotalTasksWithQuery() 
+    fetchTaskStat() 
+    getUser() 
   }
-});
+}) 
 
 watch(searchQuery, (value, oldValue) => {
   if (value !== oldValue) {
-    offset.value = 0;
-    fetchTasks(0);
-    fetchTotalTasksWithQuery();
+    offset.value = 0 
+    fetchTasks(0) 
+    fetchTotalTasksWithQuery() 
   }
-}, { flush: "sync" });
+}, { flush: "sync" }) 
 
 watch(
   () => session.value,
   (newSession) => {
     if (newSession) {
-      fetchTasks();
-      fetchTotalTasksWithQuery();
-      fetchTaskStat();
-      populateValues();
+      fetchTasks() 
+      fetchTotalTasksWithQuery() 
+      fetchTaskStat() 
+      getUser() 
     }
   },
   { immediate: true }
-);
+) 
 
 </script>
 

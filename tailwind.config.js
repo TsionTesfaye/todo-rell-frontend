@@ -19,8 +19,7 @@ module.exports = {
       },
     },
     fontFamily: {
-      sans: ["Geist Sans", "sans-serif"],
-      
+      mono: ["Geist Mono", "monospace"],
     },
     extend: {
       keyframes: {

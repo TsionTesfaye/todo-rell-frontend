@@ -134,7 +134,7 @@ const submitTask = handleSubmit(() => {
         </FormField>
         <FormField name="date">
           <FormItem class="flex flex-col mb-4">
-            <FormLabel class="block text-slate-400 text-sm mb-2">Date of birth</FormLabel>
+            <FormLabel class="block text-slate-400 text-sm mb-2">Select due date</FormLabel>
             <Popover>
               <PopoverTrigger as-child>
                 <FormControl class="w-full border-0 ring-0 bg-slate-700 text-white p-2 rounded-lg focus:outline-none ">
@@ -142,7 +142,7 @@ const submitTask = handleSubmit(() => {
                     'w-full ps-3 text-start font-normal',
                     !values.date && 'text-muted-foreground',
                   )">
-                    <span class="text-slate-400">{{ values.date ? df.format(toDate(parseDate(values.date))) : "Pick adate"
+                    <span class="text-slate-400">{{ values.date ? df.format(toDate(parseDate(values.date))) : "Pick  a date"
                       }}</span>
                     <CalendarIcon class="ms-auto h-4 w-4 opacity-50" />
                   </Button>
@@ -150,7 +150,7 @@ const submitTask = handleSubmit(() => {
                 </FormControl>
               </PopoverTrigger>
               <PopoverContent class="w-auto p-0">
-                <Calendar calendar-label="Date of birth" initial-focus :min-value="today(getLocalTimeZone())"
+                <Calendar calendar-label="Due date" initial-focus :min-value="today(getLocalTimeZone())"
                   @update:model-value="(v) => {
                     if (v) {
                       setFieldValue('date', v.toString())

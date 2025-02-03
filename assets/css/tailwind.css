@@ -1,3 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@tailwind base 
+@tailwind components 
+@tailwind utilities 
+
+@import url('https://unpkg.com/@geist-ui/react@latest/dist/geist.css') 
+
+body {
+  font-family: "Geist Mono", monospace !important 
+}

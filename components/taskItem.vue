@@ -55,20 +55,20 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-});
+}) 
 
-const emit = defineEmits(["edit", "delete", "complete"]);
+const emit = defineEmits(["edit", "delete", "complete"]) 
 
 // Handle checkbox change
 const handleCompletion = (event) => {
-  const isChecked = event.target.checked;
-  emit("complete", isChecked); // Emit the new completion status
-};
+  const isChecked = event.target.checked 
+  emit("complete", isChecked)  // Emit the new completion status
+} 
 </script>
 
 <style scoped>
 /* Add custom styles if needed */
 .line-through {
-  text-decoration: line-through;
+  text-decoration: line-through 
 }
 </style>

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 
 interface Stats {
-  total: number;
-  completed: number;
+  total: number 
+  completed: number 
  
 }
 
-const props = defineProps<{ stats: Stats }>();
+const props = defineProps<{ stats: Stats }>() 
 </script>
 
 

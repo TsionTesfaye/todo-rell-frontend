@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { useToast } from '~/components/ui/toast';
+import { useToast } from '~/components/ui/toast' 
 
 
-const {toast} = useToast();
-const { session, initSession } = useSession();
+const {toast} = useToast() 
+const { session, initSession } = useSession() 
 
 
 const connectWallet = async () => {
   try {
-    await initSession();
+    await initSession() 
     if(session.value){
-      navigateTo("/todo");
+      navigateTo("/todo") 
     }
   } catch (error) {
    return toast({
@@ -18,7 +18,7 @@ const connectWallet = async () => {
     description: "An error occured while connecting to your wallet",
    })
   }
-};
+} 
 
 </script>
 
@@ -60,16 +60,16 @@ const connectWallet = async () => {
 
 <style scoped>
 html, body {
-  overflow-x: hidden;
-  margin: 0;
-  padding: 0;
+  overflow-x: hidden 
+  margin: 0 
+  padding: 0 
 }
 
 body {
-  height: 100vh;
+  height: 100vh 
 }
 
 * {
-  box-sizing: border-box;
+  box-sizing: border-box 
 }
 </style>

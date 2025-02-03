@@ -418,7 +418,7 @@ watch(
     </div>
     <div v-else-if="!isLoading && tasksResult" class="w-full flex min-h-screen">
       <Sidebar class="hidden lg:block w-64 bg-gray-800 p-6 h-screen sticky top-0" :stats="taskStats" />
-      <div class="flex-1 p-6">
+      <div class="flex-1 p-6 pb-12">
         <!-- Header -->
         <div class="flex justify-between items-center mb-6">
           <h1 class="text-white text-2xl font-bold">{{ userName }}'s TODO APP</h1>
@@ -464,7 +464,7 @@ watch(
 
         <!-- Load More Button -->
         <div v-if="totalTask > offset + 5 && sortedTaskResult.length !== 0 && sortedTaskResult.length > 4"
-          class="flex justify-center mt-4">
+          class="flex justify-center mt-4 mb-10">
           <Button @click="loadMore" :disabled="isLoading">
             {{ isLoading ? 'Loading...' : 'Load More' }}
           </Button>

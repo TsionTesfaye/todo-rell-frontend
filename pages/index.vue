@@ -60,16 +60,16 @@ const connectWallet = async () => {
 
 <style scoped>
 html, body {
-  overflow-x: hidden 
-  margin: 0 
-  padding: 0 
+  overflow-x: hidden ;
+  margin: 0 ;
+  padding: 0 ;
 }
 
 body {
-  height: 100vh 
+  height: 100vh ;
 }
 
 * {
-  box-sizing: border-box 
+  box-sizing: border-box ;
 }
 </style>

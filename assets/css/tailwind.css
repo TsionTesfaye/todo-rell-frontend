@@ -1,11 +1,27 @@
+@import url('https://unpkg.com/@geist-ui/react@latest/dist/geist.css');
 
-@tailwind base; 
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
-@import url('https://unpkg.com/@geist-ui/react@latest/dist/geist.css') 
+/* Global Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 body {
-  font-family: "Geist Mono", monospace !important 
+  margin: 0;
+  padding: 0;
+  font-family: "Geist Mono", monospace !important;
+}
+
+/* Optional: remove default padding or margin applied by Geist UI */
+html, body {
+  min-height: 100%;
+}
+
+#app {
+  min-height: 100%;
 }

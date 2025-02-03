@@ -201,7 +201,11 @@ const addTask = async (task: TaskAdded) => {
       name: 'create_task',
       args: [task.title, task.description, task.dueDate],
     }) 
-    await fetchTasks() 
+    fetchTasks() 
+    fetchTotalTasksWithQuery() 
+    fetchTaskStat()
+   
+    
     toast({
       title: 'Success',
       description: 'Task created successfully',

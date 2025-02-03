@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 @tailwind base; 
 @tailwind components;
 @tailwind utilities;
+=======
+@tailwind base 
+@tailwind components 
+@tailwind utilities 
+>>>>>>> 7174adea5c099adc18d8176fa67a6631905c3168
 
 @import url('https://unpkg.com/@geist-ui/react@latest/dist/geist.css') 
 

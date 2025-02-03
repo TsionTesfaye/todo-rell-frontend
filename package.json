@@ -1,0 +1,42 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@chromia/ft4": "0.8.0",
+    "@nuxtjs/color-mode": "^3.5.2",
+    "@nuxtjs/tailwindcss": "^6.13.1",
+    "@pinia/nuxt": "^0.9.0",
+    "@vee-validate/zod": "^4.15.0",
+    "@vueuse/core": "^12.5.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cookie-universal-nuxt": "^2.2.2",
+    "lucide-vue-next": "^0.474.0",
+    "nuxt": "^3.15.4",
+    "nuxt-icon": "1.0.0-beta.7",
+    "pinia": "^2.3.1",
+    "postchain-client": "^1.20.2",
+    "radix-vue": "^1.9.13",
+    "shadcn-nuxt": "0.11.3",
+    "tailwind-merge": "^3.0.1",
+    "tailwindcss-animate": "^1.0.7",
+    "vee-validate": "^4.15.0",
+    "vue": "latest",
+    "vue-router": "latest",
+    "zod": "^3.24.1"
+  },
+  "packageManager": "pnpm@8.14.3+sha1.872b21adeaae4e71acd5c551ba848d927d6aa446",
+  "devDependencies": {
+    "@metamask/providers": "^19.0.0",
+    "@types/node": "^22.13.0",
+    "@types/web3": "^1.2.2"
+  }
+}
